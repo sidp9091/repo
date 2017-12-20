@@ -15,8 +15,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.springDemo.model.Classes;
 import com.example.springDemo.model.Schools;
+import com.example.springDemo.model.Student;
+import com.example.springDemo.model.Teachers;
+import com.example.springDemo.repository.ClassesRepository;
 import com.example.springDemo.repository.SchoolRepository;
+import com.example.springDemo.repository.StudentRepository;
+import com.example.springDemo.repository.TeachersRepository;
+import com.example.springDemo.service.SchoolsService;
 
 @RestController
 @RequestMapping("/api")
@@ -24,7 +31,8 @@ public class SchoolsMainController {
 
 	@Autowired
 	SchoolRepository schoolRepository;
-
+	@Autowired
+	SchoolsService schoolsService;
 	@GetMapping("/schools")
 	public List<Schools> getAllSchools() {
 		return schoolRepository.findAll();
@@ -65,8 +73,58 @@ public class SchoolsMainController {
 		if(note == null) {
 			return ResponseEntity.notFound().build();
 		}
-
 		schoolRepository.delete(note);
 		return ResponseEntity.ok().build();
 	}
+
+
+
+	@PostMapping("/teachers")
+	public Teachers createTeacherDtls(@Valid @RequestBody Teachers trch) {
+		return schoolsService.createTeacherDtls(trch);
+	}
+
+	@GetMapping("/teachers")
+	public List<Teachers> getAllTeachers() {
+		return schoolsService.getAllTeachers();
+	}
+
+	@GetMapping("/teachers/{id}")
+	public List<Teachers> getAllTeachersBySchool(@PathVariable(value = "id") Schools schoolId) {
+		return schoolsService.getAllTeachersBySchool(schoolId);
+	}
+
+	@PostMapping("/classes")
+	public Classes createClassDtls(@Valid @RequestBody Classes cls) {
+		return schoolsService.createClassDtls(cls);
+	}
+
+	@GetMapping("/classes")
+	public List<Classes> getAllClasses() {
+		return schoolsService.getAllClasses();
+	}
+
+	@GetMapping("/classes/{id}")
+	public List<Classes> getAllClassesByTeachers(@PathVariable(value = "id") Teachers teacherId) {
+		return schoolsService.getAllClassesByTeachers(teacherId);
+	}
+
+
+	@PostMapping("/student")
+	public Student createStudentDtls(@Valid @RequestBody Student sts) {
+		return schoolsService.createStudentDtls(sts);
+	}
+
+	@GetMapping("/student")
+	public List<Student> getAllStudents() {
+		return schoolsService.getAllStudents();
+	}
+
+	@GetMapping("/student/{id}")
+	public List<Student> getAllStudentByClasse(@PathVariable(value = "id") Classes classeId) {
+		return schoolsService.getAllStudentByClasse(classeId);
+	}
+
+
+
 }
